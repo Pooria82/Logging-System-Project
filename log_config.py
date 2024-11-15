@@ -1,6 +1,6 @@
 # Configuration for log storage (using JSON file for simplicity)
 log_storage_config = {
-    "storage_type": "elasticsearch",  # Options: 'json_file' or 'elasticsearch'
+    "storage_type": "json_file",  # Options: 'json_file' or 'elasticsearch'
     "filename": "logs.json",  # File to store logs if using 'json_file'
     "elasticsearch": {
         "host": "http://localhost:9200",  # Elasticsearch server URL

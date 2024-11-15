@@ -45,6 +45,9 @@ class Logger:
         start_time = datetime.now()
         start_perf = perf_counter()
 
+        if isinstance(error, Exception):
+            error = self.format_error(error)
+
         log_entry = create_log(developer_id, action, model, method, result, error)
         end_perf = perf_counter()
         elapsed_time = end_perf - start_perf
@@ -111,12 +114,18 @@ class Logger:
             "traceback": traceback.format_exc()
         }
 
-    def log_method_call(self, developer_id, model, method, result, error=None):
+    def log_method_call(self, developer_id, model, method, result, error=None, async_logging=True):
         try:
-            self.log_action_async(developer_id, "Method call", model, method, result, error)
+            if async_logging:
+                self.log_action_async(developer_id, "Method call", model, method, result, error)
+            else:
+                self.log_action(developer_id, "Method call", model, method, result, error)
         except Exception as e:
             error_details = self.format_error(e)
-            self.log_action_async(developer_id, "Method call", model, method, "error", error=error_details)
+            if async_logging:
+                self.log_action_async(developer_id, "Method call", model, method, "error", error=error_details)
+            else:
+                self.log_action(developer_id, "Method call", model, method, "error", error=error_details)
 
     def log_database_transaction(self, developer_id, model, method, result, error=None):
         try:
